@@ -1,6 +1,5 @@
 OPT:= \
 	main.c \
-	print.c \
 	gtk_iface.c
 
 strat.app:

@@ -48,19 +48,19 @@ S32 main(S32 argc, PSTR argv[])
     PGTK_WIDGET button1, button2;
     PGTK_WIDGET frame;  
     PGTK_WIDGET label;    
-    PGTK_WIDGET box;
+    PGTK_WIDGET hbox;
     GTK_WINDOW_SETTINGS window_settings;
     GTK_BUTTON_SETTINGS button_setting1, button_setting2;
     GTK_FRAME_SETTINGS  frame_settings;
     GTK_LABEL_SETTINGS  label_settings;
-    GTK_BOX_SETTINGS    box_settings;
+    GTK_BOX_SETTINGS    hbox_settings;
 
     gtkInitWidgetSettings((PTR)&window_settings, GTK_WIDGET_TYPE_WINDOW);
     gtkInitWidgetSettings((PTR)&button_setting1, GTK_WIDGET_TYPE_BUTTON);
     gtkInitWidgetSettings((PTR)&button_setting2, GTK_WIDGET_TYPE_BUTTON);
     gtkInitWidgetSettings((PTR)&frame_settings, GTK_WIDGET_TYPE_FRAME);    
     gtkInitWidgetSettings((PTR)&label_settings, GTK_WIDGET_TYPE_LABEL);    
-    gtkInitWidgetSettings((PTR)&box_settings, GTK_WIDGET_TYPE_BOX);    
+    gtkInitWidgetSettings((PTR)&hbox_settings, GTK_WIDGET_TYPE_HBOX);    
 
     gprint_log("entry application");    
     gtkInit(argc, argv);
@@ -82,7 +82,10 @@ S32 main(S32 argc, PSTR argv[])
     label_settings.pos_y            = 58;    
     label = gtkNewLabel(frame, GTK_WIDGET_TYPE_FRAME, (PGTK_LABEL_SETTINGS)&label_settings);
 #else
-    box = gtkNewBox(window, GTK_WIDGET_TYPE_WINDOW, (PGTK_BOX_SETTINGS)&box_settings);
+    hbox_settings.box_type          = GTK_WIDGET_TYPE_VBOX;
+    hbox_settings.set_same_length   = TRUE;
+    hbox_settings.spacing           = 0;
+    hbox = gtkNewBox(window, GTK_WIDGET_TYPE_WINDOW, (PGTK_BOX_SETTINGS)&hbox_settings);
 #endif
 
     button_setting1.caption          = "plus";
@@ -91,7 +94,7 @@ S32 main(S32 argc, PSTR argv[])
     button_setting1.hight            = 35; 
     button_setting1.pos_x            = 50;
     button_setting1.pos_y            = 20;     
-    button1 = gtkNewButton(box, GTK_WIDGET_TYPE_BOX, (PGTK_BUTTON_SETTINGS)&button_setting1);
+    button1 = gtkNewButton(hbox, GTK_WIDGET_TYPE_VBOX, (PGTK_BUTTON_SETTINGS)&button_setting1);
 
     button_setting2.caption          = "minus";
     button_setting2.ptr_clicked      = (PTR)&minus;
@@ -99,7 +102,7 @@ S32 main(S32 argc, PSTR argv[])
     button_setting2.hight            = 35; 
     button_setting2.pos_x            = 50;
     button_setting2.pos_y            = 80;      
-    button2 = gtkNewButton(box, GTK_WIDGET_TYPE_BOX, (PGTK_BUTTON_SETTINGS)&button_setting2);
+    button2 = gtkNewButton(hbox, GTK_WIDGET_TYPE_VBOX, (PGTK_BUTTON_SETTINGS)&button_setting2);
   
     //gtkShowWindow(window);
     gtkShowAllInWindow(window);

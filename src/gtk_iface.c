@@ -92,10 +92,19 @@ PGTK_WIDGET gtkNewFrame(PGTK_WIDGET widget, GTK_WIDGET_TYPE widget_type, PGTK_FR
 
 PGTK_WIDGET gtkNewBox(PGTK_WIDGET widget, GTK_WIDGET_TYPE widget_type, PGTK_BOX_SETTINGS settings)
 {
-    PGTK_WIDGET     box = gtk_hbox_new (FALSE, 0);
-    gprint_dbg("box=      0x%x: widget=0x%x widget_type=%d", (U32)box, (U32)widget, widget_type);
+    PGTK_WIDGET     box = NULL;
+    gprint_dbg("box=      0x%x: widget=0x%x widget_type=%d same_length=%d spacing=%d", 
+                            (U32)box, (U32)widget, widget_type, settings->set_same_length, settings->spacing);
 
-    gtk_container_add (GTK_CONTAINER (widget), box);
+    if (settings->box_type == GTK_WIDGET_TYPE_HBOX)
+        box = gtk_hbox_new (FALSE, 0);
+    else if (settings->box_type == GTK_WIDGET_TYPE_VBOX)
+        box = gtk_vbox_new (FALSE, 0);
+    else
+        gprint_err(" undefined widget type=%d", widget_type);
+
+    if (box)
+        gtk_container_add (GTK_CONTAINER (widget), box);
     
     return box;
 }
@@ -151,20 +160,37 @@ PGTK_WIDGET gtkNewButton(PGTK_WIDGET widget, GTK_WIDGET_TYPE widget_type, PGTK_B
         gtk_container_add (GTK_CONTAINER (widget), button);
         gtk_widget_show (button);
     }
-    else if (widget_type == GTK_WIDGET_TYPE_BOX)
+    else if ((widget_type == GTK_WIDGET_TYPE_HBOX) || (widget_type == GTK_WIDGET_TYPE_VBOX))
     {
-        gtkAddToBox(widget, button, GTK_WIDGET_TYPE_BUTTON);
+        gtkAddToBox(widget, widget_type, GTK_BOX_PACK_TYPE_START, button, GTK_WIDGET_TYPE_BUTTON, TRUE, TRUE, 0);
     }
     
     return (PGTK_WIDGET)button;
 }
 
-PGTK_WIDGET gtkAddToBox(PGTK_WIDGET box, PGTK_WIDGET widget, GTK_WIDGET_TYPE widget_type)
+PGTK_WIDGET gtkAddToBox(PGTK_WIDGET box, GTK_WIDGET_TYPE box_type, GTK_BOX_PACK_TYPE packing_type, PGTK_WIDGET widget,
+                                    GTK_WIDGET_TYPE widget_type, BOOL expand, BOOL fill, U32 padding)
 {
-    gprint_dbg("box=      0x%x: widget=0x%x widget_type=%d", (U32)box, (U32)widget, widget_type);
+    gprint_dbg("box=      0x%x: box_type=%d widget=0x%x widget_type=%d packing_type=%d expand=%d fill=%d padding=%d", (U32)box, box_type, (U32)widget, widget_type, packing_type, expand, fill, padding);
 
     if (widget_type == GTK_WIDGET_TYPE_BUTTON)
-        gtk_box_pack_start (GTK_BOX (box), widget ,TRUE, TRUE, 0);
+    {
+        switch (packing_type)
+        {
+            case GTK_BOX_PACK_TYPE_START:            
+                gtk_box_pack_start (GTK_BOX (box), widget ,expand, fill, padding);
+                break;
+            case GTK_BOX_PACK_TYPE_END:            
+                gtk_box_pack_end (GTK_BOX (box), widget ,expand, fill, padding);
+                break;
+            default:
+                 gprint_wrn(" undefined packing type=%d", packing_type);
+                break;
+        }
+    }
+    else
+        gprint_wrn(" undefined widget type=%d", widget_type);
+
     
     return box;
 }
@@ -226,7 +252,6 @@ void gtkInitWidgetSettings(PTR settings, GTK_WIDGET_TYPE widget_type)
                 s->ptr_destroy     = NULL;
             }
             break;
-            
         case GTK_WIDGET_TYPE_BUTTON:  
             {
                 PGTK_BUTTON_SETTINGS s = (PGTK_BUTTON_SETTINGS)settings;
@@ -245,7 +270,6 @@ void gtkInitWidgetSettings(PTR settings, GTK_WIDGET_TYPE widget_type)
                 s->pos_y            = 20;     
             }
             break;
-            
         case GTK_WIDGET_TYPE_FRAME:    
             {
                 PGTK_FRAME_SETTINGS s = (PGTK_FRAME_SETTINGS)settings;
@@ -253,7 +277,6 @@ void gtkInitWidgetSettings(PTR settings, GTK_WIDGET_TYPE widget_type)
                 s->caption          = "";
             }
             break;
-            
         case GTK_WIDGET_TYPE_LABEL:
             {
                 PGTK_LABEL_SETTINGS s = (PGTK_LABEL_SETTINGS)settings;
@@ -263,15 +286,17 @@ void gtkInitWidgetSettings(PTR settings, GTK_WIDGET_TYPE widget_type)
                 s->pos_y            = 20;                    
             }
             break;
-
-        case GTK_WIDGET_TYPE_BOX:
+        case GTK_WIDGET_TYPE_VBOX:
+        case GTK_WIDGET_TYPE_HBOX:            
             {
                 PGTK_BOX_SETTINGS s = (PGTK_BOX_SETTINGS)settings;
                 
                 s->caption          = "";
+                s->box_type         = GTK_WIDGET_TYPE_HBOX;
+                s->set_same_length  = FALSE;
+                s->spacing          = FALSE;                
             }
             break;
-
         default:
              gprint_wrn(" undefined type widget_type=%d", widget_type);
             break;

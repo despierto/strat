@@ -30,7 +30,8 @@ PGTK_WIDGET gtkNewBox(PGTK_WIDGET widget, GTK_WIDGET_TYPE widget_type, PGTK_BOX_
 void        gtkSetupWindowView(PGTK_WIDGET widget, GTK_WIDGET_TYPE widget_type, PGTK_WINDOW_SETTINGS settings);
 void        gtkConnectEventCb(PGTK_WIDGET widget, PSTR event_type, PTR cb);
 void        gtkInitWidgetSettings(PTR settings, GTK_WIDGET_TYPE widget_type);
-PGTK_WIDGET gtkAddToBox(PGTK_WIDGET box, PGTK_WIDGET widget, GTK_WIDGET_TYPE widget_type);
+PGTK_WIDGET gtkAddToBox(PGTK_WIDGET box, GTK_WIDGET_TYPE box_type, GTK_BOX_PACK_TYPE packing_type, PGTK_WIDGET widget,
+                                    GTK_WIDGET_TYPE widget_type, BOOL expand, BOOL fill, U32 padding);
 
 
 PGTK_PIXBUF gtkCreatePixbuf(const PSTR filename);

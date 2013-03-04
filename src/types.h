@@ -1,31 +1,31 @@
 /*****************************************************************************
  *          
  *          START EDITOR:  types definitions 
+ *          Authors:              - Alex Winter,  <eterno.despierto@gmail.com>
+ *                                    -
+ *
+ *          Date:                  02.2013
+ *          Version:              1.0.0.1
  *
  *****************************************************************************/
 
 #ifndef _TYPES_H_
 #define _TYPES_H_
 
-#include <gtk/gtk.h>
 
-
-#define SUCCESS     (0)
-#define FAILURE     (1)
+#define SUCCESS         (0)
+#define FAILURE         (1)
 
 #ifndef TRUE
-#define TRUE        (1)
+#define TRUE            (1)
 #endif
-#define FALSE       (0)
-
-#define NULLP       (void *)0
-
+#define FALSE           (0)
+#define NULLP           (void *)0
 #ifndef NULL
-#define NULL        (0)
+#define NULL            (0)
 #endif
 
-#define INLINE      inline
-
+#define INLINE          inline
 
 typedef char            STR, *PSTR;
 
@@ -58,8 +58,15 @@ typedef U32             BIT_FIELD;
 #endif
 #define ROUND(x, dx)    (((x) + ((dx) - 1) ) & ~((dx) - 1))
 
-#define __align(x) __attribute__((aligned(x)))
+#define __align(x)      __attribute__((aligned(x)))
 
+typedef enum
+{
+  NUM_TYPE_DEC = 0,
+  NUM_TYPE_HEX_L,
+  NUM_TYPE_HEX_H,  
+  NUM_TYPE_MASK,    
+} NUM_TYPE;
 
 
 

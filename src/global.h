@@ -1,6 +1,11 @@
 /*****************************************************************************
  *          
  *          START EDITOR:  global definitions 
+ *          Authors:              - Alex Winter,  <eterno.despierto@gmail.com>
+ *                                    -
+ *
+ *          Date:                  02.2013
+ *          Version:              1.0.0.1
  *
  *****************************************************************************/
 
@@ -10,6 +15,8 @@
 #include "types.h"
 #include "print.h"
 
+
+#define GBL_ICON_FILE   "strat.png"
 
 
 static inline void _AssertHandler(U32 rc, const S8 *filename, U32 line)
@@ -21,7 +28,6 @@ static inline void _AssertHandler(U32 rc, const S8 *filename, U32 line)
 }
 
 #define _ASSERT(x) if ((U32)x == 0) { _AssertHandler ((U32)x, __FILE__, __LINE__); while (1);}
-
 
 
 

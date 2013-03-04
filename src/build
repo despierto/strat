@@ -1,0 +1,8 @@
+echo "*** clean..."
+rm -rvf strat.app *.o
+echo " "
+
+echo "*** build..."
+make -f makefile
+echo "*** done"
+

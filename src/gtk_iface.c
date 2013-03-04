@@ -65,9 +65,9 @@ PGTK_WIDGET gtkNewWindow(PGTK_WINDOW_SETTINGS settings)
             (U32)widget, settings->window_type, (U32)settings->ptr_destroy, (U32)settings->ptr_delete_event, settings->icon_filename);
 
     if (settings->ptr_delete_event)
-        g_signal_connect (G_OBJECT (widget), GTK_EVENT_TYPE_DELETE, G_CALLBACK( settings->ptr_delete_event), NULL);
+        gtkConnectEventCb(widget, GTK_EVENT_TYPE_DELETE, settings->ptr_delete_event);
     if (settings->ptr_destroy)
-        g_signal_connect (G_OBJECT (widget), GTK_EVENT_TYPE_DESTROY, G_CALLBACK(settings->ptr_destroy), NULL);
+        gtkConnectEventCb(widget, GTK_EVENT_TYPE_DESTROY, settings->ptr_destroy);
 
     gtk_window_set_title(GTK_WINDOW(widget), settings->title);
     gtk_window_set_default_size(GTK_WINDOW(widget), settings->width, settings->hight);
@@ -90,13 +90,23 @@ PGTK_WIDGET gtkNewFrame(PGTK_WIDGET widget, GTK_WIDGET_TYPE widget_type, PGTK_FR
     return frame;
 }
 
+PGTK_WIDGET gtkNewBox(PGTK_WIDGET widget, GTK_WIDGET_TYPE widget_type, PGTK_BOX_SETTINGS settings)
+{
+    PGTK_WIDGET     box = gtk_hbox_new (FALSE, 0);
+    gprint_dbg("box=      0x%x: widget=0x%x widget_type=%d", (U32)box, (U32)widget, widget_type);
+
+    gtk_container_add (GTK_CONTAINER (widget), box);
+    
+    return box;
+}
+
 PGTK_WIDGET gtkNewLabel(PGTK_WIDGET widget, GTK_WIDGET_TYPE widget_type, PGTK_LABEL_SETTINGS settings)
 {
     PGTK_WIDGET     label = gtk_label_new(settings->caption);
     gprint_dbg("label=    0x%x: widget=0x%x widget_type=%d caption=<%s> x=%d y=%d", 
         (U32)label, (U32)widget, widget_type, settings->caption,  settings->pos_x, settings->pos_y);
 
-    if (widget_type == GTK_WIDHET_TYPE_FRAME)
+    if (widget_type == GTK_WIDGET_TYPE_FRAME)
         gtk_fixed_put(GTK_FIXED(widget), label, settings->pos_x, settings->pos_y);
     
     return label;
@@ -115,44 +125,55 @@ PGTK_WIDGET gtkNewButton(PGTK_WIDGET widget, GTK_WIDGET_TYPE widget_type, PGTK_B
         (U32)settings->ptr_leave, (U32)settings->ptr_pressed, (U32)settings->ptr_released);
 
     if (settings->ptr_activate)
-        g_signal_connect (G_OBJECT (button), GTK_BUTTON_TYPE_ACTIVE, G_CALLBACK(settings->ptr_activate), NULL);
+        gtkConnectEventCb(button, GTK_BUTTON_TYPE_ACTIVE, settings->ptr_activate);
     if (settings->ptr_clicked)
-        g_signal_connect (G_OBJECT (button), GTK_BUTTON_TYPE_CLICKED, G_CALLBACK(settings->ptr_clicked), NULL);
+        gtkConnectEventCb(button, GTK_BUTTON_TYPE_CLICKED, settings->ptr_clicked);
     if (settings->ptr_enter)
-        g_signal_connect (G_OBJECT (button), GTK_BUTTON_TYPE_ENTER, G_CALLBACK(settings->ptr_enter), NULL);
+        gtkConnectEventCb(button, GTK_BUTTON_TYPE_ENTER, settings->ptr_enter);
     if (settings->ptr_leave)
-        g_signal_connect (G_OBJECT (button), GTK_BUTTON_TYPE_LEAVE, G_CALLBACK(settings->ptr_leave), NULL);
+        gtkConnectEventCb(button, GTK_BUTTON_TYPE_LEAVE, settings->ptr_leave);
     if (settings->ptr_pressed)
-        g_signal_connect (G_OBJECT (button), GTK_BUTTON_TYPE_PRESSED, G_CALLBACK(settings->ptr_pressed), NULL);
+        gtkConnectEventCb(button, GTK_BUTTON_TYPE_PRESSED, settings->ptr_pressed);
     if (settings->ptr_released)
-        g_signal_connect (G_OBJECT (button), GTK_BUTTON_TYPE_RELEASED, G_CALLBACK(settings->ptr_released), NULL);
+        gtkConnectEventCb(button, GTK_BUTTON_TYPE_RELEASED, settings->ptr_released);
 
     if (settings->exit_on_type)
         g_signal_connect_swapped (G_OBJECT (button), settings->exit_on_type, G_CALLBACK(gtk_widget_destroy), G_OBJECT (widget));
 
     gtk_widget_set_size_request(button, settings->width, settings->hight);
 
-    if (widget_type == GTK_WIDHET_TYPE_FRAME)
+    if (widget_type == GTK_WIDGET_TYPE_FRAME)
     {
         gtk_fixed_put(GTK_FIXED(widget), button, settings->pos_x, settings->pos_y);
     }
-    else if (widget_type == GTK_WIDHET_TYPE_WINDOW)
+    else if (widget_type == GTK_WIDGET_TYPE_WINDOW)
     {
         gtk_container_add (GTK_CONTAINER (widget), button);
         gtk_widget_show (button);
+    }
+    else if (widget_type == GTK_WIDGET_TYPE_BOX)
+    {
+        gtkAddToBox(widget, button, GTK_WIDGET_TYPE_BUTTON);
     }
     
     return (PGTK_WIDGET)button;
 }
 
+PGTK_WIDGET gtkAddToBox(PGTK_WIDGET box, PGTK_WIDGET widget, GTK_WIDGET_TYPE widget_type)
+{
+    gprint_dbg("box=      0x%x: widget=0x%x widget_type=%d", (U32)box, (U32)widget, widget_type);
 
+    if (widget_type == GTK_WIDGET_TYPE_BUTTON)
+        gtk_box_pack_start (GTK_BOX (box), widget ,TRUE, TRUE, 0);
+    
+    return box;
+}
 
 
 
 /****************************************************************************************
- *           Additional set
+ *           Setup widgets
  ****************************************************************************************/
- 
 void gtkSetupWindowView(PGTK_WIDGET widget, GTK_WIDGET_TYPE widget_type, PGTK_WINDOW_SETTINGS settings)
 {
     gprint_dbg("window=   0x%x: widget_type=%d type=%d PTR: D(%X) DE(%X) icon_file=<%s> title=<%s> w=%d h=%d bw=%d pos=%d", 
@@ -173,7 +194,97 @@ void gtkSetupWindowView(PGTK_WIDGET widget, GTK_WIDGET_TYPE widget_type, PGTK_WI
 
     return;
 }
+ 
 
+void gtkConnectEventCb(PGTK_WIDGET widget, PSTR event_type, PTR cb)
+{
+    gprint_dbg("widget=   0x%x: event_type=%s cb=0x%x", (U32)widget, event_type, (U32)cb);
+    g_signal_connect (G_OBJECT (widget), event_type, G_CALLBACK(cb), NULL);
+    
+    return;
+}
+
+
+
+void gtkInitWidgetSettings(PTR settings, GTK_WIDGET_TYPE widget_type)
+{
+    gprint_dbg("settings= 0x%x: widget_type=%d", (U32)settings, widget_type);
+    switch (widget_type)
+    {
+        case GTK_WIDGET_TYPE_WINDOW:
+            {
+                PGTK_WINDOW_SETTINGS s = (PGTK_WINDOW_SETTINGS)settings;
+                
+                s->window_type     = GTK_WINDOW_TOPLEVEL;
+                s->position        = GTK_WIN_POS_NONE;
+                s->border_width    = 5;
+                s->width           = 200;
+                s->hight           = 200;
+                s->title           = "GKT Application";
+                s->icon_filename   = "";
+                s->ptr_delete_event= NULL;
+                s->ptr_destroy     = NULL;
+            }
+            break;
+            
+        case GTK_WIDGET_TYPE_BUTTON:  
+            {
+                PGTK_BUTTON_SETTINGS s = (PGTK_BUTTON_SETTINGS)settings;
+                
+                s->caption          = "";
+                s->exit_on_type     = GTK_BUTTON_TYPE_NONE;
+                s->ptr_activate     = NULL;
+                s->ptr_clicked      = NULL;
+                s->ptr_enter        = NULL;
+                s->ptr_leave        = NULL;
+                s->ptr_pressed      = NULL;
+                s->ptr_released     = NULL;
+                s->width            = 40;
+                s->hight            = 20; 
+                s->pos_x            = 20;
+                s->pos_y            = 20;     
+            }
+            break;
+            
+        case GTK_WIDGET_TYPE_FRAME:    
+            {
+                PGTK_FRAME_SETTINGS s = (PGTK_FRAME_SETTINGS)settings;
+                
+                s->caption          = "";
+            }
+            break;
+            
+        case GTK_WIDGET_TYPE_LABEL:
+            {
+                PGTK_LABEL_SETTINGS s = (PGTK_LABEL_SETTINGS)settings;
+                
+                s->caption          = "";
+                s->pos_x            = 20;
+                s->pos_y            = 20;                    
+            }
+            break;
+
+        case GTK_WIDGET_TYPE_BOX:
+            {
+                PGTK_BOX_SETTINGS s = (PGTK_BOX_SETTINGS)settings;
+                
+                s->caption          = "";
+            }
+            break;
+
+        default:
+             gprint_wrn(" undefined type widget_type=%d", widget_type);
+            break;
+    }
+    
+    return;
+}
+
+
+
+/****************************************************************************************
+ *           Additional set
+ ****************************************************************************************/
 PGTK_PIXBUF gtkCreatePixbuf(const PSTR filename)
 {
     PGTK_PIXBUF     pixbuf;
@@ -203,12 +314,12 @@ PGTK_PIXBUF gtkCreatePixbuf(const PSTR filename)
     
     switch (widget_type)
     {
-        case GTK_WIDHET_TYPE_WINDOW:
-        case GTK_WIDHET_TYPE_BUTTON:            
-        case GTK_WIDHET_TYPE_FRAME:            
+        case GTK_WIDGET_TYPE_WINDOW:
+        case GTK_WIDGET_TYPE_BUTTON:            
+        case GTK_WIDGET_TYPE_FRAME:            
             gprint_wrn(" undefined type widget_type=%d", widget_type);
             break;
-        case GTK_WIDHET_TYPE_LABEL:
+        case GTK_WIDGET_TYPE_LABEL:
             gtk_label_set_text(GTK_LABEL(widget), text);
             break;
         default:
@@ -249,12 +360,12 @@ PGTK_PIXBUF gtkCreatePixbuf(const PSTR filename)
     
     switch (widget_type)
     {
-        case GTK_WIDHET_TYPE_WINDOW:
-        case GTK_WIDHET_TYPE_BUTTON:            
-        case GTK_WIDHET_TYPE_FRAME:            
+        case GTK_WIDGET_TYPE_WINDOW:
+        case GTK_WIDGET_TYPE_BUTTON:            
+        case GTK_WIDGET_TYPE_FRAME:            
             gprint_wrn(" undefined type widget_type=%d", widget_type);
             break;
-        case GTK_WIDHET_TYPE_LABEL:
+        case GTK_WIDGET_TYPE_LABEL:
             gtk_label_set_text(GTK_LABEL(widget), buf);
             break;
         default:

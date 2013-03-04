@@ -48,17 +48,23 @@ S32 main(S32 argc, PSTR argv[])
     PGTK_WIDGET button1, button2;
     PGTK_WIDGET frame;  
     PGTK_WIDGET label;    
+    PGTK_WIDGET box;
     GTK_WINDOW_SETTINGS window_settings;
     GTK_BUTTON_SETTINGS button_setting1, button_setting2;
     GTK_FRAME_SETTINGS  frame_settings;
     GTK_LABEL_SETTINGS  label_settings;
+    GTK_BOX_SETTINGS    box_settings;
+
+    gtkInitWidgetSettings((PTR)&window_settings, GTK_WIDGET_TYPE_WINDOW);
+    gtkInitWidgetSettings((PTR)&button_setting1, GTK_WIDGET_TYPE_BUTTON);
+    gtkInitWidgetSettings((PTR)&button_setting2, GTK_WIDGET_TYPE_BUTTON);
+    gtkInitWidgetSettings((PTR)&frame_settings, GTK_WIDGET_TYPE_FRAME);    
+    gtkInitWidgetSettings((PTR)&label_settings, GTK_WIDGET_TYPE_LABEL);    
+    gtkInitWidgetSettings((PTR)&box_settings, GTK_WIDGET_TYPE_BOX);    
 
     gprint_log("entry application");    
     gtkInit(argc, argv);
 
-    window_settings.window_type     = GTK_WINDOW_TOPLEVEL;
-    window_settings.position        = GTK_WIN_POS_NONE;
-    window_settings.border_width    = 5;
     window_settings.width           = 250;
     window_settings.hight           = 180;
     window_settings.title           = " Strat Editor";
@@ -67,42 +73,34 @@ S32 main(S32 argc, PSTR argv[])
     window_settings.ptr_destroy     = (PTR)&destroy;
     window = gtkNewWindow((PGTK_WINDOW_SETTINGS)&window_settings);
 
+#if 0
     frame_settings.caption            = "Good day";
-    frame = gtkNewFrame(window, GTK_WIDHET_TYPE_WINDOW, (PGTK_FRAME_SETTINGS)&frame_settings);
-
-    button_setting1.caption          = "plus";
-    button_setting1.exit_on_type     = GTK_BUTTON_TYPE_NONE;
-    button_setting1.ptr_activate     = NULL;
-    button_setting1.ptr_clicked      = (PTR)&plus;
-    button_setting1.ptr_enter        = NULL;
-    button_setting1.ptr_leave        = NULL;
-    button_setting1.ptr_pressed      = NULL;
-    button_setting1.ptr_released     = NULL;
-    button_setting1.width            = 80;
-    button_setting1.hight            = 35; 
-    button_setting1.pos_x            = 50;
-    button_setting1.pos_y            = 20;     
-    button1 = gtkNewButton(frame, GTK_WIDHET_TYPE_FRAME, (PGTK_BUTTON_SETTINGS)&button_setting1);
-
-    button_setting2.caption          = "minus";
-    button_setting2.exit_on_type     = GTK_BUTTON_TYPE_NONE;
-    button_setting2.ptr_activate     = NULL;
-    button_setting2.ptr_clicked      = (PTR)&minus;
-    button_setting2.ptr_enter        = NULL;
-    button_setting2.ptr_leave        = NULL;
-    button_setting2.ptr_pressed      = NULL;
-    button_setting2.ptr_released     = NULL;
-    button_setting2.width            = 80;
-    button_setting2.hight            = 35; 
-    button_setting2.pos_x            = 50;
-    button_setting2.pos_y            = 80;      
-    button2 = gtkNewButton(frame, GTK_WIDHET_TYPE_FRAME, (PGTK_BUTTON_SETTINGS)&button_setting2);
+    frame = gtkNewFrame(window, GTK_WIDGET_TYPE_WINDOW, (PGTK_FRAME_SETTINGS)&frame_settings);
 
     label_settings.caption          = "label";
     label_settings.pos_x            = 190;
     label_settings.pos_y            = 58;    
-    label = gtkNewLabel(frame, GTK_WIDHET_TYPE_FRAME, (PGTK_LABEL_SETTINGS)&label_settings);
+    label = gtkNewLabel(frame, GTK_WIDGET_TYPE_FRAME, (PGTK_LABEL_SETTINGS)&label_settings);
+#else
+    box = gtkNewBox(window, GTK_WIDGET_TYPE_WINDOW, (PGTK_BOX_SETTINGS)&box_settings);
+#endif
 
+    button_setting1.caption          = "plus";
+    button_setting1.ptr_clicked      = (PTR)&plus;
+    button_setting1.width            = 80;
+    button_setting1.hight            = 35; 
+    button_setting1.pos_x            = 50;
+    button_setting1.pos_y            = 20;     
+    button1 = gtkNewButton(box, GTK_WIDGET_TYPE_BOX, (PGTK_BUTTON_SETTINGS)&button_setting1);
+
+    button_setting2.caption          = "minus";
+    button_setting2.ptr_clicked      = (PTR)&minus;
+    button_setting2.width            = 80;
+    button_setting2.hight            = 35; 
+    button_setting2.pos_x            = 50;
+    button_setting2.pos_y            = 80;      
+    button2 = gtkNewButton(box, GTK_WIDGET_TYPE_BOX, (PGTK_BUTTON_SETTINGS)&button_setting2);
+  
     //gtkShowWindow(window);
     gtkShowAllInWindow(window);
 

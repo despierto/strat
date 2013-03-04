@@ -17,10 +17,11 @@
 
 typedef enum
 {
-  GTK_WIDHET_TYPE_WINDOW = 0,
-  GTK_WIDHET_TYPE_BUTTON,
-  GTK_WIDHET_TYPE_FRAME,
-  GTK_WIDHET_TYPE_LABEL,
+    GTK_WIDGET_TYPE_WINDOW = 0,
+    GTK_WIDGET_TYPE_BUTTON,
+    GTK_WIDGET_TYPE_FRAME,
+    GTK_WIDGET_TYPE_LABEL,
+    GTK_WIDGET_TYPE_BOX,
 } GTK_WIDGET_TYPE;
 
 typedef struct _GTK_WINDOW_SETTINGS_
@@ -48,7 +49,7 @@ typedef struct _GTK_BUTTON_SETTINGS_
     U32     hight;
 
     PSTR    caption;
-    PSTR    type;
+//    PSTR    type;
 
     PSTR    exit_on_type;
 
@@ -66,6 +67,12 @@ typedef struct _GTK_FRAME_SETTINGS_
     PSTR    caption;
 
 }GTK_FRAME_SETTINGS, *PGTK_FRAME_SETTINGS;
+
+typedef struct _GTK_BOX_SETTINGS_
+{
+    PSTR    caption;
+
+}GTK_BOX_SETTINGS, *PGTK_BOX_SETTINGS;
 
 typedef struct _GTK_LABEL_SETTINGS_
 {

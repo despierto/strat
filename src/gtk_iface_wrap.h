@@ -32,6 +32,11 @@
 #ifndef GTK_FIXED
 #define GTK_FIXED(x)            GTK_FIXED (x)
 #endif
+#ifndef GTK_BOX
+#define GTK_BOX(x)              GTK_BOX (x)
+#endif
+
+
 
 
 //redefinitions of gtk type for storing widget content
@@ -55,8 +60,8 @@ typedef GtkWindowType   GTK_WINDOW_TYPE,   *PGTK_WINDOW_TYPE;
 #define GTK_BUTTON_TYPE_ACTIVE      "activate"
 
 //collecting types for events
-#define GTK_EVENT_TYPE_DELETE       "delete_event"
-#define GTK_EVENT_TYPE_DESTROY      "destroy"
+#define GTK_EVENT_TYPE_DELETE           "delete_event"
+#define GTK_EVENT_TYPE_DESTROY          "destroy"
 
 #define GTK_EVENT_TYPE_EVENT            "event"
 #define GTK_EVENT_TYPE_BUTTON_PRESS     "button_press_event"

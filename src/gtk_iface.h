@@ -23,9 +23,16 @@ PGTK_WIDGET gtkNewWindow(PGTK_WINDOW_SETTINGS settings);
 PGTK_WIDGET gtkNewButton(PGTK_WIDGET widget, GTK_WIDGET_TYPE widget_type, PGTK_BUTTON_SETTINGS settings);
 PGTK_WIDGET gtkNewFrame(PGTK_WIDGET widget, GTK_WIDGET_TYPE widget_type, PGTK_FRAME_SETTINGS settings);
 PGTK_WIDGET gtkNewLabel(PGTK_WIDGET widget, GTK_WIDGET_TYPE widget_type, PGTK_LABEL_SETTINGS settings);
+PGTK_WIDGET gtkNewBox(PGTK_WIDGET widget, GTK_WIDGET_TYPE widget_type, PGTK_BOX_SETTINGS settings);
+
 
 
 void        gtkSetupWindowView(PGTK_WIDGET widget, GTK_WIDGET_TYPE widget_type, PGTK_WINDOW_SETTINGS settings);
+void        gtkConnectEventCb(PGTK_WIDGET widget, PSTR event_type, PTR cb);
+void        gtkInitWidgetSettings(PTR settings, GTK_WIDGET_TYPE widget_type);
+PGTK_WIDGET gtkAddToBox(PGTK_WIDGET box, PGTK_WIDGET widget, GTK_WIDGET_TYPE widget_type);
+
+
 PGTK_PIXBUF gtkCreatePixbuf(const PSTR filename);
 
 void        gtkSetNum(PGTK_WIDGET widget, GTK_WIDGET_TYPE widget_type, U32 number, NUM_TYPE number_type, PSTR mask);

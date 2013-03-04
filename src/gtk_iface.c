@@ -173,7 +173,7 @@ PGTK_WIDGET gtkAddToBox(PGTK_WIDGET box, GTK_WIDGET_TYPE box_type, GTK_BOX_PACK_
 {
     gprint_dbg("box=      0x%x: box_type=%d widget=0x%x widget_type=%d packing_type=%d expand=%d fill=%d padding=%d", (U32)box, box_type, (U32)widget, widget_type, packing_type, expand, fill, padding);
 
-    if (widget_type == GTK_WIDGET_TYPE_BUTTON)
+    if ((widget_type == GTK_WIDGET_TYPE_BUTTON) || (widget_type == GTK_WIDGET_TYPE_LABEL))
     {
         switch (packing_type)
         {

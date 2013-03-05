@@ -26,8 +26,9 @@ typedef enum
     GTK_WIDGET_TYPE_VBOX,    
     GTK_WIDGET_TYPE_HSEPARATOR,
     GTK_WIDGET_TYPE_VSEPARATOR,    
+    GTK_WIDGET_TYPE_TABLE,
+    GTK_WIDGET_TYPE_CELL,       //actually it it a container of widget in the table    
 } GTK_WIDGET_TYPE;
-
 
 typedef enum
 {
@@ -36,6 +37,11 @@ typedef enum
     GTK_BOX_PACK_TYPE_END,
 } GTK_BOX_PACK_TYPE;
 
+typedef enum
+{
+    GTK_TABLE_PACKING_TYPE_DEFAULT = 0,
+    GTK_TABLE_PACKING_TYPE_EXTENDED,
+} GTK_TABLE_PACKING_TYPE;
 
 typedef struct _GTK_WINDOW_SETTINGS_
 {
@@ -93,7 +99,7 @@ typedef struct _GTK_BOX_SETTINGS_
 {
     PSTR            caption;
     GTK_WIDGET_TYPE box_type;
-    BOOL            set_same_length;    //width for hbox & hight for vbox
+    BOOL            same_size;    //width for hbox & hight for vbox
     U32             spacing;
 
 }GTK_BOX_SETTINGS, *PGTK_BOX_SETTINGS;
@@ -110,7 +116,32 @@ typedef struct _GTK_LABEL_SETTINGS_
 
 }GTK_LABEL_SETTINGS, *PGTK_LABEL_SETTINGS;
 
+typedef struct _GTK_TABLE_SETTINGS_
+{
+    U32             rows;
+    U32             columns;
+    BOOL            same_size;
+    U32             spacing_rows;
+    U32             spacing_columns;
 
+}GTK_TABLE_SETTINGS, *PGTK_TABLE_SETTINGS;
+
+typedef struct _GTK_CELL_SETTINGS_
+{
+    GTK_TABLE_PACKING_TYPE packing_type;
+
+    U32             attach_left;
+    U32             attach_right;
+    U32             attach_top;
+    U32             attach_bottom;    
+    GtkAttachOptions attach_option_x;        
+    GtkAttachOptions attach_option_y;        
+    U32             padding_x;
+    U32             padding_y;
+    U32             spacing_row;
+    U32             spacing_column;
+
+}GTK_CELL_SETTINGS, *PGTK_CELL_SETTINGS;
 
 
 #endif /*_GTK_IFACE_TYPES_H_*/

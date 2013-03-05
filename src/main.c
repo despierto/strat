@@ -45,21 +45,26 @@ void destroy(PGTK_WIDGET widget, GPTR data)
 S32 main(S32 argc, PSTR argv[])
 {
     PGTK_WIDGET window;
-    PGTK_WIDGET button1, button2;
+    PGTK_WIDGET button1, button2, button3;
     PGTK_WIDGET frame;  
     PGTK_WIDGET label, label_1;    
     PGTK_WIDGET hbox, vbox;
     PGTK_WIDGET hseparator, vseparator;    
+    PGTK_WIDGET table;
     GTK_WINDOW_SETTINGS     window_settings;
-    GTK_BUTTON_SETTINGS     button_setting1, button_setting2;
+    GTK_BUTTON_SETTINGS     button_setting1, button_setting2, button_setting3;
     GTK_FRAME_SETTINGS      frame_settings;
     GTK_LABEL_SETTINGS      label_settings, label_1_settings;
     GTK_BOX_SETTINGS        vbox_settings, hbox_settings;
     GTK_SEPARATOR_SETTINGS  vseparator_settings, hseparator_settings;    
+    GTK_TABLE_SETTINGS      table_settings;
+    GTK_CELL_SETTINGS       cell_style_1;
+
 
     gtkInitWidgetSettings((PTR)&window_settings, GTK_WIDGET_TYPE_WINDOW);
     gtkInitWidgetSettings((PTR)&button_setting1, GTK_WIDGET_TYPE_BUTTON);
     gtkInitWidgetSettings((PTR)&button_setting2, GTK_WIDGET_TYPE_BUTTON);
+    gtkInitWidgetSettings((PTR)&button_setting3, GTK_WIDGET_TYPE_BUTTON);    
     gtkInitWidgetSettings((PTR)&frame_settings, GTK_WIDGET_TYPE_FRAME);    
     gtkInitWidgetSettings((PTR)&label_settings, GTK_WIDGET_TYPE_LABEL);    
     gtkInitWidgetSettings((PTR)&label_1_settings, GTK_WIDGET_TYPE_LABEL);     
@@ -67,6 +72,8 @@ S32 main(S32 argc, PSTR argv[])
     gtkInitWidgetSettings((PTR)&vbox_settings, GTK_WIDGET_TYPE_VBOX);        
     gtkInitWidgetSettings((PTR)&hseparator_settings, GTK_WIDGET_TYPE_HSEPARATOR);    
     gtkInitWidgetSettings((PTR)&vseparator_settings, GTK_WIDGET_TYPE_VSEPARATOR);        
+    gtkInitWidgetSettings((PTR)&table_settings, GTK_WIDGET_TYPE_TABLE);        
+    gtkInitWidgetSettings((PTR)&cell_style_1, GTK_WIDGET_TYPE_CELL);        
 
     gprint_log("entry application");    
     gtkInit(argc, argv);
@@ -83,11 +90,11 @@ S32 main(S32 argc, PSTR argv[])
     //frame_settings.caption            = "Good day";
     //frame = gtkNewFrame(window, GTK_WIDGET_TYPE_WINDOW, (PGTK_FRAME_SETTINGS)&frame_settings);
  
-    vbox_settings.set_same_length   = FALSE;
+    vbox_settings.same_size         = FALSE;
     vbox_settings.spacing           = 0;
     vbox = gtkNewBox(window, GTK_WIDGET_TYPE_WINDOW, (PGTK_BOX_SETTINGS)&vbox_settings);
 
-    hbox_settings.set_same_length   = TRUE;
+    hbox_settings.same_size         = TRUE;
     hbox_settings.spacing           = 0;
     hbox = gtkNewBox(vbox, GTK_WIDGET_TYPE_VBOX, (PGTK_BOX_SETTINGS)&hbox_settings);
 
@@ -131,9 +138,22 @@ S32 main(S32 argc, PSTR argv[])
 
     hseparator = gtkNewSeparator(vbox, GTK_WIDGET_TYPE_VBOX, (PGTK_SEPARATOR_SETTINGS)&hseparator_settings);
 
-    vseparator_settings.width = 500;
-    vseparator_settings.hight = 50;    
+    vseparator_settings.width       = 500;
+    vseparator_settings.hight       = 50;    
     vseparator = gtkNewSeparator(hbox, GTK_WIDGET_TYPE_HBOX, (PGTK_SEPARATOR_SETTINGS)&vseparator_settings);
+
+    table_settings.same_size        = TRUE;
+    table = gtkNewTable(vbox, GTK_WIDGET_TYPE_VBOX, (PGTK_TABLE_SETTINGS)&table_settings);
+
+    button_setting2.caption          = "in table";
+    button3 = gtkNewButton(NULL, GTK_WIDGET_TYPE_NONE, (PGTK_BUTTON_SETTINGS)&button_setting3);
+
+    cell_style_1.attach_left        = 1;
+    cell_style_1.attach_right       = 2;
+    cell_style_1.attach_top         = 1;
+    cell_style_1.attach_bottom      = 2;
+    gtkAddToTable(table, button3, GTK_WIDGET_TYPE_BUTTON, (PGTK_CELL_SETTINGS)&cell_style_1);
+
 
     
     //gtkShowWindow(window);

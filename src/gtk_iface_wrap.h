@@ -35,7 +35,9 @@
 #ifndef GTK_BOX
 #define GTK_BOX(x)              GTK_BOX (x)
 #endif
-
+#ifndef GTK_TABLE
+#define GTK_TABLE(x)            GTK_TABLE (x)
+#endif
 
 
 

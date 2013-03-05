@@ -84,6 +84,8 @@ typedef struct _GTK_FRAME_SETTINGS_
 typedef struct _GTK_SEPARATOR_SETTINGS_
 {
     GTK_WIDGET_TYPE    sepatator_type;
+    U32     width;
+    U32     hight;    
 
 }GTK_SEPARATOR_SETTINGS, *PGTK_SEPARATOR_SETTINGS;
 

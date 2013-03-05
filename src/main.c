@@ -130,7 +130,11 @@ S32 main(S32 argc, PSTR argv[])
     
 
     hseparator = gtkNewSeparator(vbox, GTK_WIDGET_TYPE_VBOX, (PGTK_SEPARATOR_SETTINGS)&hseparator_settings);
+
+    vseparator_settings.width = 500;
+    vseparator_settings.hight = 50;    
     vseparator = gtkNewSeparator(hbox, GTK_WIDGET_TYPE_HBOX, (PGTK_SEPARATOR_SETTINGS)&vseparator_settings);
+
     
     //gtkShowWindow(window);
     gtkShowAllInWindow(window);

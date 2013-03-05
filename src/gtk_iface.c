@@ -158,6 +158,9 @@ PGTK_WIDGET gtkNewSeparator(PGTK_WIDGET widget,
 
     _ASSERT(separator);
 
+    if (settings->width && settings->hight)
+        gtk_widget_set_size_request(separator, settings->width, settings->hight);
+
     if (widget_type == GTK_WIDGET_TYPE_WINDOW)
         gtk_container_add (GTK_CONTAINER (widget), separator);
     else if ((widget_type == GTK_WIDGET_TYPE_HBOX) || (widget_type == GTK_WIDGET_TYPE_VBOX))
@@ -200,7 +203,8 @@ PGTK_WIDGET gtkNewButton(PGTK_WIDGET widget,
     if (settings->exit_on_type)
         g_signal_connect_swapped (G_OBJECT (button), settings->exit_on_type, G_CALLBACK(gtk_widget_destroy), G_OBJECT (widget));
 
-    gtk_widget_set_size_request(button, settings->width, settings->hight);
+    if (settings->width && settings->hight)
+        gtk_widget_set_size_request(button, settings->width, settings->hight);
 
     if (widget_type == GTK_WIDGET_TYPE_FRAME)
     {
@@ -328,8 +332,8 @@ void gtkInitWidgetSettings(PTR settings,
                 s->ptr_leave        = NULL;
                 s->ptr_pressed      = NULL;
                 s->ptr_released     = NULL;
-                s->width            = 40;
-                s->hight            = 20; 
+                s->width            = 0;
+                s->hight            = 0; 
                 s->pos_x            = 20;
                 s->pos_y            = 20;     
             }
@@ -377,6 +381,8 @@ void gtkInitWidgetSettings(PTR settings,
                 PGTK_SEPARATOR_SETTINGS s = (PGTK_SEPARATOR_SETTINGS)settings;
                 
                 s->sepatator_type   = GTK_WIDGET_TYPE_HSEPARATOR;
+                s->width            = 0;
+                s->hight            = 0; 
             }
             break;            
         case GTK_WIDGET_TYPE_VSEPARATOR:            
@@ -384,6 +390,8 @@ void gtkInitWidgetSettings(PTR settings,
                 PGTK_SEPARATOR_SETTINGS s = (PGTK_SEPARATOR_SETTINGS)settings;
                 
                 s->sepatator_type   = GTK_WIDGET_TYPE_VSEPARATOR;
+                s->width            = 0;
+                s->hight            = 0; 
             }
             break;            
         default:

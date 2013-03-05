@@ -48,6 +48,9 @@ typedef GError          GTK_ERROR,          *PGTK_ERROR;
 typedef gchar           GTK_CHAR,           *PGTK_CHAR;
 typedef GtkWindowType   GTK_WINDOW_TYPE,   *PGTK_WINDOW_TYPE;
 
+typedef gfloat          GF32, *PGF32;
+typedef gdouble         GF64, *PGF64;
+
 
 
 //collecting types for button

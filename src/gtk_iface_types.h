@@ -94,6 +94,9 @@ typedef struct _GTK_LABEL_SETTINGS_
    
     U32     pos_x;
     U32     pos_y;    
+ 
+    GF32    aling_x;    // left =0..1=right
+    GF32    aling_y;    // top =0..1=buttom
 
 }GTK_LABEL_SETTINGS, *PGTK_LABEL_SETTINGS;
 

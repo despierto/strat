@@ -47,20 +47,24 @@ S32 main(S32 argc, PSTR argv[])
     PGTK_WIDGET window;
     PGTK_WIDGET button1, button2;
     PGTK_WIDGET frame;  
-    PGTK_WIDGET label;    
+    PGTK_WIDGET label, label_1;    
     PGTK_WIDGET hbox;
+    PGTK_WIDGET vbox;    
     GTK_WINDOW_SETTINGS window_settings;
     GTK_BUTTON_SETTINGS button_setting1, button_setting2;
     GTK_FRAME_SETTINGS  frame_settings;
-    GTK_LABEL_SETTINGS  label_settings;
+    GTK_LABEL_SETTINGS  label_settings, label_1_settings;
     GTK_BOX_SETTINGS    hbox_settings;
+    GTK_BOX_SETTINGS    vbox_settings;
 
     gtkInitWidgetSettings((PTR)&window_settings, GTK_WIDGET_TYPE_WINDOW);
     gtkInitWidgetSettings((PTR)&button_setting1, GTK_WIDGET_TYPE_BUTTON);
     gtkInitWidgetSettings((PTR)&button_setting2, GTK_WIDGET_TYPE_BUTTON);
     gtkInitWidgetSettings((PTR)&frame_settings, GTK_WIDGET_TYPE_FRAME);    
     gtkInitWidgetSettings((PTR)&label_settings, GTK_WIDGET_TYPE_LABEL);    
+    gtkInitWidgetSettings((PTR)&label_1_settings, GTK_WIDGET_TYPE_LABEL);     
     gtkInitWidgetSettings((PTR)&hbox_settings, GTK_WIDGET_TYPE_HBOX);    
+    gtkInitWidgetSettings((PTR)&vbox_settings, GTK_WIDGET_TYPE_VBOX);        
 
     gprint_log("entry application");    
     gtkInit(argc, argv);
@@ -77,12 +81,30 @@ S32 main(S32 argc, PSTR argv[])
     frame_settings.caption            = "Good day";
     frame = gtkNewFrame(window, GTK_WIDGET_TYPE_WINDOW, (PGTK_FRAME_SETTINGS)&frame_settings);
 #else
+ 
+    vbox_settings.box_type          = GTK_WIDGET_TYPE_VBOX;
+    vbox_settings.set_same_length   = FALSE;
+    vbox_settings.spacing           = 0;
+    vbox = gtkNewBox(window, GTK_WIDGET_TYPE_WINDOW, (PGTK_BOX_SETTINGS)&vbox_settings);
 
     hbox_settings.box_type          = GTK_WIDGET_TYPE_HBOX;
-    hbox_settings.set_same_length   = FALSE;
+    hbox_settings.set_same_length   = TRUE;;
     hbox_settings.spacing           = 0;
-    hbox = gtkNewBox(window, GTK_WIDGET_TYPE_WINDOW, (PGTK_BOX_SETTINGS)&hbox_settings);
+    hbox = gtkNewBox(vbox, GTK_WIDGET_TYPE_VBOX, (PGTK_BOX_SETTINGS)&hbox_settings);
+
 #endif
+
+    //gtkAddToBox(vbox, GTK_WIDGET_TYPE_VBOX, GTK_BOX_PACK_TYPE_START, hbox, GTK_WIDGET_TYPE_HBOX, FALSE, FALSE, 0);
+
+    label_1_settings.caption          = "gtk_hbox_new (FALSE, 0)";
+    label_1_settings.aling_y          = 0.5;
+    label_1_settings.aling_x          = 0.5;
+
+    //label_1 = gtkNewLabel(vbox, GTK_WIDGET_TYPE_VBOX, (PGTK_LABEL_SETTINGS)&label_1_settings);
+    label_1 = gtkNewLabel(NULL, GTK_WIDGET_TYPE_NONE, (PGTK_LABEL_SETTINGS)&label_1_settings);
+    gtkAddToBox(vbox, GTK_WIDGET_TYPE_VBOX, GTK_BOX_PACK_TYPE_END, label_1, GTK_WIDGET_TYPE_LABEL, FALSE, FALSE, 0);
+ 
+
 
     button_setting1.caption          = "plus";
     button_setting1.ptr_clicked      = (PTR)&plus;
@@ -106,8 +128,10 @@ S32 main(S32 argc, PSTR argv[])
     label_settings.caption          = "label";
     label_settings.pos_x            = 190;
     label_settings.pos_y            = 58;    
+    label_settings.aling_y          = 1;
+    label_settings.aling_x          = 0.5;    
     label = gtkNewLabel(NULL, GTK_WIDGET_TYPE_NONE, (PGTK_LABEL_SETTINGS)&label_settings);
-    gtkAddToBox(hbox, GTK_WIDGET_TYPE_HBOX, GTK_BOX_PACK_TYPE_START, label, GTK_WIDGET_TYPE_LABEL, FALSE, FALSE, 0);
+    gtkAddToBox(hbox, GTK_WIDGET_TYPE_HBOX, GTK_BOX_PACK_TYPE_END, label, GTK_WIDGET_TYPE_LABEL, FALSE, FALSE, 0);
     
     //gtkShowWindow(window);
     gtkShowAllInWindow(window);

@@ -48,14 +48,14 @@ S32 main(S32 argc, PSTR argv[])
     PGTK_WIDGET button1, button2;
     PGTK_WIDGET frame;  
     PGTK_WIDGET label, label_1;    
-    PGTK_WIDGET hbox;
-    PGTK_WIDGET vbox;    
-    GTK_WINDOW_SETTINGS window_settings;
-    GTK_BUTTON_SETTINGS button_setting1, button_setting2;
-    GTK_FRAME_SETTINGS  frame_settings;
-    GTK_LABEL_SETTINGS  label_settings, label_1_settings;
-    GTK_BOX_SETTINGS    hbox_settings;
-    GTK_BOX_SETTINGS    vbox_settings;
+    PGTK_WIDGET hbox, vbox;
+    PGTK_WIDGET hseparator, vseparator;    
+    GTK_WINDOW_SETTINGS     window_settings;
+    GTK_BUTTON_SETTINGS     button_setting1, button_setting2;
+    GTK_FRAME_SETTINGS      frame_settings;
+    GTK_LABEL_SETTINGS      label_settings, label_1_settings;
+    GTK_BOX_SETTINGS        vbox_settings, hbox_settings;
+    GTK_SEPARATOR_SETTINGS  vseparator_settings, hseparator_settings;    
 
     gtkInitWidgetSettings((PTR)&window_settings, GTK_WIDGET_TYPE_WINDOW);
     gtkInitWidgetSettings((PTR)&button_setting1, GTK_WIDGET_TYPE_BUTTON);
@@ -65,6 +65,8 @@ S32 main(S32 argc, PSTR argv[])
     gtkInitWidgetSettings((PTR)&label_1_settings, GTK_WIDGET_TYPE_LABEL);     
     gtkInitWidgetSettings((PTR)&hbox_settings, GTK_WIDGET_TYPE_HBOX);    
     gtkInitWidgetSettings((PTR)&vbox_settings, GTK_WIDGET_TYPE_VBOX);        
+    gtkInitWidgetSettings((PTR)&hseparator_settings, GTK_WIDGET_TYPE_HSEPARATOR);    
+    gtkInitWidgetSettings((PTR)&vseparator_settings, GTK_WIDGET_TYPE_VSEPARATOR);        
 
     gprint_log("entry application");    
     gtkInit(argc, argv);
@@ -77,22 +79,17 @@ S32 main(S32 argc, PSTR argv[])
     window_settings.ptr_destroy     = (PTR)&destroy;
     window = gtkNewWindow((PGTK_WINDOW_SETTINGS)&window_settings);
 
-#if 0
-    frame_settings.caption            = "Good day";
-    frame = gtkNewFrame(window, GTK_WIDGET_TYPE_WINDOW, (PGTK_FRAME_SETTINGS)&frame_settings);
-#else
+
+    //frame_settings.caption            = "Good day";
+    //frame = gtkNewFrame(window, GTK_WIDGET_TYPE_WINDOW, (PGTK_FRAME_SETTINGS)&frame_settings);
  
-    vbox_settings.box_type          = GTK_WIDGET_TYPE_VBOX;
     vbox_settings.set_same_length   = FALSE;
     vbox_settings.spacing           = 0;
     vbox = gtkNewBox(window, GTK_WIDGET_TYPE_WINDOW, (PGTK_BOX_SETTINGS)&vbox_settings);
 
-    hbox_settings.box_type          = GTK_WIDGET_TYPE_HBOX;
-    hbox_settings.set_same_length   = TRUE;;
+    hbox_settings.set_same_length   = TRUE;
     hbox_settings.spacing           = 0;
     hbox = gtkNewBox(vbox, GTK_WIDGET_TYPE_VBOX, (PGTK_BOX_SETTINGS)&hbox_settings);
-
-#endif
 
     //gtkAddToBox(vbox, GTK_WIDGET_TYPE_VBOX, GTK_BOX_PACK_TYPE_START, hbox, GTK_WIDGET_TYPE_HBOX, FALSE, FALSE, 0);
 
@@ -104,7 +101,6 @@ S32 main(S32 argc, PSTR argv[])
     label_1 = gtkNewLabel(NULL, GTK_WIDGET_TYPE_NONE, (PGTK_LABEL_SETTINGS)&label_1_settings);
     gtkAddToBox(vbox, GTK_WIDGET_TYPE_VBOX, GTK_BOX_PACK_TYPE_END, label_1, GTK_WIDGET_TYPE_LABEL, FALSE, FALSE, 0);
  
-
 
     button_setting1.caption          = "plus";
     button_setting1.ptr_clicked      = (PTR)&plus;
@@ -122,7 +118,6 @@ S32 main(S32 argc, PSTR argv[])
     button_setting2.pos_x            = 50;
     button_setting2.pos_y            = 80;      
     button2 = gtkNewButton(NULL, GTK_WIDGET_TYPE_NONE, (PGTK_BUTTON_SETTINGS)&button_setting2);
-    
     gtkAddToBox(hbox, GTK_WIDGET_TYPE_HBOX, GTK_BOX_PACK_TYPE_START, button2, GTK_WIDGET_TYPE_BUTTON, FALSE, FALSE, 0);
 
     label_settings.caption          = "label";
@@ -132,6 +127,10 @@ S32 main(S32 argc, PSTR argv[])
     label_settings.aling_x          = 0.5;    
     label = gtkNewLabel(NULL, GTK_WIDGET_TYPE_NONE, (PGTK_LABEL_SETTINGS)&label_settings);
     gtkAddToBox(hbox, GTK_WIDGET_TYPE_HBOX, GTK_BOX_PACK_TYPE_END, label, GTK_WIDGET_TYPE_LABEL, FALSE, FALSE, 0);
+    
+
+    hseparator = gtkNewSeparator(vbox, GTK_WIDGET_TYPE_VBOX, (PGTK_SEPARATOR_SETTINGS)&hseparator_settings);
+    vseparator = gtkNewSeparator(hbox, GTK_WIDGET_TYPE_HBOX, (PGTK_SEPARATOR_SETTINGS)&vseparator_settings);
     
     //gtkShowWindow(window);
     gtkShowAllInWindow(window);

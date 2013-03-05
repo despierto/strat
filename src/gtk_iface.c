@@ -64,6 +64,8 @@ PGTK_WIDGET gtkNewWindow(PGTK_WINDOW_SETTINGS settings)
     gprint_dbg("window=   0x%x: type=%d PTR: D(%X) DE(%X) icon_file=<%s>", 
             (U32)widget, settings->window_type, (U32)settings->ptr_destroy, (U32)settings->ptr_delete_event, settings->icon_filename);
 
+    _ASSERT(widget);
+
     if (settings->ptr_delete_event)
         gtkConnectEventCb(widget, GTK_EVENT_TYPE_DELETE, settings->ptr_delete_event);
     if (settings->ptr_destroy)
@@ -87,6 +89,8 @@ PGTK_WIDGET gtkNewFrame(PGTK_WIDGET widget,
     PGTK_WIDGET     frame = gtk_fixed_new();
     gprint_dbg("frame=    0x%x: widget=0x%x widget_type=%d caption=<%s>", (U32)frame, (U32)widget, widget_type, settings->caption);
 
+    _ASSERT(frame);
+
     gtk_container_add (GTK_CONTAINER (widget), frame);
     
     return frame;
@@ -107,14 +111,13 @@ PGTK_WIDGET gtkNewBox(  PGTK_WIDGET widget,
     else
         gprint_err(" undefined widget type=%d", widget_type);
 
-    if (box)
-    {
-        if (widget_type == GTK_WIDGET_TYPE_WINDOW)
-            gtk_container_add (GTK_CONTAINER (widget), box);
-        else if ((widget_type == GTK_WIDGET_TYPE_VBOX) || (widget_type == GTK_WIDGET_TYPE_VBOX))
-             gtkAddToBox(widget, widget_type, GTK_BOX_PACK_TYPE_START, box, settings->box_type, FALSE, FALSE, 0);
-    }   
-    
+    _ASSERT(box);
+
+    if (widget_type == GTK_WIDGET_TYPE_WINDOW)
+        gtk_container_add (GTK_CONTAINER (widget), box);
+    else if ((widget_type == GTK_WIDGET_TYPE_VBOX) || (widget_type == GTK_WIDGET_TYPE_VBOX))
+         gtkAddToBox(widget, widget_type, GTK_BOX_PACK_TYPE_START, box, settings->box_type, FALSE, FALSE, 0);
+
     return box;
 }
 
@@ -126,15 +129,44 @@ PGTK_WIDGET gtkNewLabel( PGTK_WIDGET widget,
     gprint_dbg("label=    0x%x: widget=0x%x widget_type=%d caption=<%s> x=%d y=%d", 
         (U32)label, (U32)widget, widget_type, settings->caption,  settings->pos_x, settings->pos_y);
 
+    _ASSERT(label);
+
     gtk_misc_set_alignment (GTK_MISC (label), settings->aling_x, settings->aling_y);
 
     if (widget_type == GTK_WIDGET_TYPE_FRAME)
         gtk_fixed_put(GTK_FIXED(widget), label, settings->pos_x, settings->pos_y);
-    else if ((widget_type == GTK_WIDGET_TYPE_VBOX) || (widget_type == GTK_WIDGET_TYPE_VBOX))
+    else if ((widget_type == GTK_WIDGET_TYPE_HBOX) || (widget_type == GTK_WIDGET_TYPE_VBOX))
         gtkAddToBox(widget, widget_type, GTK_BOX_PACK_TYPE_START, label, GTK_WIDGET_TYPE_LABEL, FALSE, FALSE, 0);
     
     return label;
 }
+
+PGTK_WIDGET gtkNewSeparator(PGTK_WIDGET widget, 
+                                GTK_WIDGET_TYPE widget_type, 
+                                PGTK_SEPARATOR_SETTINGS settings)
+{
+    PGTK_WIDGET     separator = NULL;
+    gprint_dbg("separator=0x%x: widget=0x%x widget_type=%d", 
+                            (U32)separator, (U32)widget, widget_type);
+
+    if (settings->sepatator_type == GTK_WIDGET_TYPE_HSEPARATOR)
+        separator = gtk_hseparator_new();
+    else if (settings->sepatator_type == GTK_WIDGET_TYPE_VSEPARATOR)
+        separator = gtk_vseparator_new();
+    else
+        gprint_err(" undefined widget type=%d", widget_type);
+
+    _ASSERT(separator);
+
+    if (widget_type == GTK_WIDGET_TYPE_WINDOW)
+        gtk_container_add (GTK_CONTAINER (widget), separator);
+    else if ((widget_type == GTK_WIDGET_TYPE_HBOX) || (widget_type == GTK_WIDGET_TYPE_VBOX))
+         gtkAddToBox(widget, widget_type, GTK_BOX_PACK_TYPE_START, separator, settings->sepatator_type, FALSE, FALSE, 5);
+
+    
+    return separator;
+}
+
 
 PGTK_WIDGET gtkNewButton(PGTK_WIDGET widget, 
                             GTK_WIDGET_TYPE widget_type, 
@@ -149,6 +181,8 @@ PGTK_WIDGET gtkNewButton(PGTK_WIDGET widget,
         (U32)button, settings->exit_on_type,
         (U32)settings->ptr_activate, (U32)settings->ptr_clicked, (U32)settings->ptr_enter, 
         (U32)settings->ptr_leave, (U32)settings->ptr_pressed, (U32)settings->ptr_released);
+
+    _ASSERT(button);
 
     if (settings->ptr_activate)
         gtkConnectEventCb(button, GTK_BUTTON_TYPE_ACTIVE, settings->ptr_activate);
@@ -197,7 +231,8 @@ PGTK_WIDGET gtkAddToBox(PGTK_WIDGET box,
     gprint_dbg("box=      0x%x: box_type=%d widget=0x%x widget_type=%d packing_type=%d expand=%d fill=%d padding=%d", (U32)box, box_type, (U32)widget, widget_type, packing_type, expand, fill, padding);
 
     if ((widget_type == GTK_WIDGET_TYPE_BUTTON) || (widget_type == GTK_WIDGET_TYPE_LABEL) ||
-            (widget_type == GTK_WIDGET_TYPE_HBOX) || (widget_type == GTK_WIDGET_TYPE_VBOX))
+            (widget_type == GTK_WIDGET_TYPE_HBOX) || (widget_type == GTK_WIDGET_TYPE_VBOX) ||
+            (widget_type == GTK_WIDGET_TYPE_HSEPARATOR) || (widget_type == GTK_WIDGET_TYPE_VSEPARATOR))
     {
         switch (packing_type)
         {
@@ -318,6 +353,15 @@ void gtkInitWidgetSettings(PTR settings,
             }
             break;
         case GTK_WIDGET_TYPE_VBOX:
+            {
+                PGTK_BOX_SETTINGS s = (PGTK_BOX_SETTINGS)settings;
+                
+                s->caption          = "";
+                s->box_type         = GTK_WIDGET_TYPE_VBOX;
+                s->set_same_length  = FALSE;
+                s->spacing          = FALSE;                
+            }
+            break;
         case GTK_WIDGET_TYPE_HBOX:            
             {
                 PGTK_BOX_SETTINGS s = (PGTK_BOX_SETTINGS)settings;
@@ -328,6 +372,20 @@ void gtkInitWidgetSettings(PTR settings,
                 s->spacing          = FALSE;                
             }
             break;
+        case GTK_WIDGET_TYPE_HSEPARATOR:            
+            {
+                PGTK_SEPARATOR_SETTINGS s = (PGTK_SEPARATOR_SETTINGS)settings;
+                
+                s->sepatator_type   = GTK_WIDGET_TYPE_HSEPARATOR;
+            }
+            break;            
+        case GTK_WIDGET_TYPE_VSEPARATOR:            
+            {
+                PGTK_SEPARATOR_SETTINGS s = (PGTK_SEPARATOR_SETTINGS)settings;
+                
+                s->sepatator_type   = GTK_WIDGET_TYPE_VSEPARATOR;
+            }
+            break;            
         default:
              gprint_wrn(" undefined type widget_type=%d", widget_type);
             break;

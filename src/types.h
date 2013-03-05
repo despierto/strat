@@ -12,6 +12,8 @@
 #ifndef _TYPES_H_
 #define _TYPES_H_
 
+#include "print.h"
+
 
 #define SUCCESS         (0)
 #define FAILURE         (1)
@@ -69,6 +71,15 @@ typedef enum
 } NUM_TYPE;
 
 
+static inline void _AssertHandler(U32 rc, const S8 *filename, U32 line)
+{
+    gprint_log("\r\n---- ASSERT---\r\n");
+    gprint_log("         RC:0x%08x", rc);
+    gprint_log("       File:%s", filename);
+    gprint_log("       Row :%d", line);   
+}
+
+#define _ASSERT(x) if ((U32)x == 0) { _AssertHandler ((U32)x, __FILE__, __LINE__); while (1);}
 
 
 #endif /*_TYPES_H_*/

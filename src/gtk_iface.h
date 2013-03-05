@@ -32,6 +32,9 @@ PGTK_WIDGET gtkNewLabel(PGTK_WIDGET widget,
 PGTK_WIDGET gtkNewBox(  PGTK_WIDGET widget, 
                             GTK_WIDGET_TYPE widget_type, 
                             PGTK_BOX_SETTINGS settings);
+PGTK_WIDGET gtkNewSeparator(PGTK_WIDGET widget, 
+                                GTK_WIDGET_TYPE widget_type, 
+                                PGTK_SEPARATOR_SETTINGS settings);
 
 
 void        gtkSetupWindowView( PGTK_WIDGET widget, 

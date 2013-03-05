@@ -12,8 +12,6 @@
 #ifndef _PRINT_H_
 #define _PRINT_H_
 
-#include "types.h"
-
 #define GPRINTF_LOG_OK
 #define GPRINTF_ERR_OK
 #define GPRINTF_DBG_OK

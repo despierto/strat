@@ -56,13 +56,13 @@ typedef gdouble         GF64, *PGF64;
 
 
 //collecting types for button
-#define GTK_BUTTON_TYPE_NONE        NULL
-#define GTK_BUTTON_TYPE_PRESSED     "pressed"
-#define GTK_BUTTON_TYPE_RELEASED    "released"
-#define GTK_BUTTON_TYPE_CLICKED     "clicked"
-#define GTK_BUTTON_TYPE_ENTER       "enter"
-#define GTK_BUTTON_TYPE_LEAVE       "leave"
-#define GTK_BUTTON_TYPE_ACTIVE      "activate"
+#define GTK_BUTTON_STATE_TYPE_NONE        NULL
+#define GTK_BUTTON_STATE_TYPE_PRESSED     "pressed"
+#define GTK_BUTTON_STATE_TYPE_RELEASED    "released"
+#define GTK_BUTTON_STATE_TYPE_CLICKED     "clicked"
+#define GTK_BUTTON_STATE_TYPE_ENTER       "enter"
+#define GTK_BUTTON_STATE_TYPE_LEAVE       "leave"
+#define GTK_BUTTON_STATE_TYPE_ACTIVE      "activate"
 
 //collecting types for events
 #define GTK_EVENT_TYPE_DELETE           "delete_event"

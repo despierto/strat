@@ -16,8 +16,8 @@
 #include "print.h"
 
 
-#define GBL_ICON_FILE   "strat.png"
-
+#define GBL_ICON_FILE               "icon/strat.png"
+#define GBL_ICON_FILE_PLANET_01     "icon/linux_001.png"
 
 
 

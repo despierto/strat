@@ -12,6 +12,8 @@
 #include "gtk_iface.h"
 #include "print.h"
 
+PGTK_WIDGET gtkNewMixedButton(PSTR caption, PSTR icon_file);
+
 
 /****************************************************************************************
  *           Events
@@ -213,7 +215,27 @@ PGTK_WIDGET gtkNewButton(PGTK_WIDGET widget,
     PGTK_WIDGET     button;
     _ASSERT(settings);
 
-    button = gtk_button_new_with_label(settings->caption);
+    switch (settings->button_type)
+    {
+        case GTK_BUTTON_TYPE_CLEAN:            
+            button = gtk_button_new();
+            break;
+        case GTK_BUTTON_TYPE_LABEL:            
+            button = gtk_button_new_with_label(settings->caption);
+            break;
+        case GTK_BUTTON_TYPE_MNEMONIC:            
+            button = gtk_button_new_with_mnemonic(settings->caption);
+            break;
+        case GTK_BUTTON_TYPE_MIXED:            
+            button = gtkNewMixedButton(settings->caption, settings->icon_file);
+            break;
+        default:
+             gprint_wrn(" undefined button type=%d", settings->button_type);
+            break;
+    }
+    _ASSERT(settings);
+
+    
     gprint_dbg("button=   0x%x: widget=0x%x widget_type=%d caption=<%s> w=%d h=%d x=%d y=%d", 
                     (U32)button, (U32)widget, widget_type, settings->caption, settings->width, 
                     settings->hight, settings->pos_x, settings->pos_y);
@@ -224,17 +246,17 @@ PGTK_WIDGET gtkNewButton(PGTK_WIDGET widget,
     _ASSERT(button);
 
     if (settings->ptr_activate)
-        gtkConnectEventCb(button, GTK_BUTTON_TYPE_ACTIVE, settings->ptr_activate);
+        gtkConnectEventCb(button, GTK_BUTTON_STATE_TYPE_ACTIVE, settings->ptr_activate);
     if (settings->ptr_clicked)
-        gtkConnectEventCb(button, GTK_BUTTON_TYPE_CLICKED, settings->ptr_clicked);
+        gtkConnectEventCb(button, GTK_BUTTON_STATE_TYPE_CLICKED, settings->ptr_clicked);
     if (settings->ptr_enter)
-        gtkConnectEventCb(button, GTK_BUTTON_TYPE_ENTER, settings->ptr_enter);
+        gtkConnectEventCb(button, GTK_BUTTON_STATE_TYPE_ENTER, settings->ptr_enter);
     if (settings->ptr_leave)
-        gtkConnectEventCb(button, GTK_BUTTON_TYPE_LEAVE, settings->ptr_leave);
+        gtkConnectEventCb(button, GTK_BUTTON_STATE_TYPE_LEAVE, settings->ptr_leave);
     if (settings->ptr_pressed)
-        gtkConnectEventCb(button, GTK_BUTTON_TYPE_PRESSED, settings->ptr_pressed);
+        gtkConnectEventCb(button, GTK_BUTTON_STATE_TYPE_PRESSED, settings->ptr_pressed);
     if (settings->ptr_released)
-        gtkConnectEventCb(button, GTK_BUTTON_TYPE_RELEASED, settings->ptr_released);
+        gtkConnectEventCb(button, GTK_BUTTON_STATE_TYPE_RELEASED, settings->ptr_released);
 
     if (settings->exit_on_type)
         g_signal_connect_swapped (G_OBJECT (button), settings->exit_on_type, G_CALLBACK(gtk_widget_destroy), G_OBJECT (widget));
@@ -258,6 +280,38 @@ PGTK_WIDGET gtkNewButton(PGTK_WIDGET widget,
     
     return (PGTK_WIDGET)button;
 }
+
+PGTK_WIDGET gtkNewMixedButton(PSTR caption, PSTR icon_file)
+{
+    PGTK_WIDGET button;
+    PGTK_WIDGET box;
+    PGTK_WIDGET label;
+    PGTK_WIDGET image;
+
+    button = gtk_button_new();
+    _ASSERT(button);   
+
+    box = gtk_hbox_new (FALSE, 0);
+    _ASSERT(box);  
+
+    gtk_container_set_border_width (GTK_CONTAINER (box), 2);
+    
+    image = gtk_image_new_from_file (icon_file);
+    _ASSERT(image);  
+
+    label = gtk_label_new (caption);
+    _ASSERT(label);  
+
+    gtk_box_pack_start (GTK_BOX (box), image, FALSE, FALSE, 3);
+    gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 3);
+    gtk_widget_show (image);
+    gtk_widget_show (label);
+
+    gtk_container_add (GTK_CONTAINER (button), box);
+        
+    return button;
+}
+
 
 PGTK_WIDGET gtkAddToBox(PGTK_WIDGET box,
                             GTK_WIDGET_TYPE box_type, 
@@ -411,9 +465,11 @@ void gtkInitWidgetSettings(PTR settings,
         case GTK_WIDGET_TYPE_BUTTON:  
             {
                 PGTK_BUTTON_SETTINGS s = (PGTK_BUTTON_SETTINGS)settings;
-                
+
+                s->button_type      = GTK_BUTTON_TYPE_LABEL;
                 s->caption          = "";
-                s->exit_on_type     = GTK_BUTTON_TYPE_NONE;
+                s->icon_file        = "";                
+                s->exit_on_type     = GTK_BUTTON_STATE_TYPE_NONE;
                 s->ptr_activate     = NULL;
                 s->ptr_clicked      = NULL;
                 s->ptr_enter        = NULL;

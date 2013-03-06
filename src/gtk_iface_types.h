@@ -43,6 +43,14 @@ typedef enum
     GTK_TABLE_PACKING_TYPE_EXTENDED,
 } GTK_TABLE_PACKING_TYPE;
 
+typedef enum
+{
+    GTK_BUTTON_TYPE_CLEAN = 0,
+    GTK_BUTTON_TYPE_LABEL,
+    GTK_BUTTON_TYPE_MNEMONIC,
+    GTK_BUTTON_TYPE_MIXED,
+} GTK_BUTTON_TYPE;
+
 typedef struct _GTK_WINDOW_SETTINGS_
 {
     GtkWindowType       window_type;
@@ -62,13 +70,15 @@ typedef struct _GTK_WINDOW_SETTINGS_
 
 typedef struct _GTK_BUTTON_SETTINGS_
 {
+    GTK_BUTTON_TYPE     button_type;
+
     U32     pos_x;
     U32     pos_y; 
     U32     width;
     U32     hight;
 
     PSTR    caption;
-//    PSTR    type;
+    PSTR    icon_file;
 
     PSTR    exit_on_type;
 

@@ -145,7 +145,11 @@ S32 main(S32 argc, PSTR argv[])
     table_settings.same_size        = TRUE;
     table = gtkNewTable(vbox, GTK_WIDGET_TYPE_VBOX, (PGTK_TABLE_SETTINGS)&table_settings);
 
-    button_setting2.caption          = "in table";
+    button_setting3.caption          = "Go!!!";
+    button_setting3.icon_file        = GBL_ICON_FILE_PLANET_01;  
+    button_setting3.width            = 120;
+    button_setting3.hight            = 60;     
+    button_setting3.button_type      = GTK_BUTTON_TYPE_MIXED;
     button3 = gtkNewButton(NULL, GTK_WIDGET_TYPE_NONE, (PGTK_BUTTON_SETTINGS)&button_setting3);
 
     cell_style_1.attach_left        = 1;

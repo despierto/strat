@@ -12,7 +12,7 @@
 #include "gtk_iface.h"
 #include "print.h"
 
-PGTK_WIDGET gtkNewMixedButton(PSTR caption, PSTR icon_file);
+PGTK_WIDGET gtkNewMixedButton(GTK_BUTTON_TYPE button_type, PSTR caption, PSTR icon_file);
 
 
 /****************************************************************************************
@@ -214,10 +214,11 @@ PGTK_WIDGET gtkNewButton(PGTK_WIDGET widget,
 {
     PGTK_WIDGET     button;
     _ASSERT(settings);
+    U32 type_range = 0;
 
     switch (settings->button_type)
     {
-        case GTK_BUTTON_TYPE_CLEAN:            
+        case GTK_BUTTON_TYPE_EMPTY:            
             button = gtk_button_new();
             break;
         case GTK_BUTTON_TYPE_LABEL:            
@@ -227,7 +228,23 @@ PGTK_WIDGET gtkNewButton(PGTK_WIDGET widget,
             button = gtk_button_new_with_mnemonic(settings->caption);
             break;
         case GTK_BUTTON_TYPE_MIXED:            
-            button = gtkNewMixedButton(settings->caption, settings->icon_file);
+            button = gtkNewMixedButton(settings->button_type, settings->caption, settings->icon_file);
+            break;
+        case GTK_BUTTON_TYPE_TOGGLE:
+            type_range = GTK_BUTTON_TYPE_TOGGLE;
+            button = gtk_toggle_button_new();
+            break;
+        case GTK_BUTTON_TYPE_TOGGLE_LABEL:
+            type_range = GTK_BUTTON_TYPE_TOGGLE;
+            button = gtk_toggle_button_new_with_label(settings->caption);
+            break;
+        case GTK_BUTTON_TYPE_TOGGLE_MNEMONIC:
+            type_range = GTK_BUTTON_TYPE_TOGGLE;
+            button = gtk_toggle_button_new_with_mnemonic(settings->caption);
+            break;
+        case GTK_BUTTON_TYPE_TOGGLE_MIXED:
+            type_range = GTK_BUTTON_TYPE_TOGGLE;
+            button = gtkNewMixedButton(settings->button_type, settings->caption, settings->icon_file);
             break;
         default:
              gprint_wrn(" undefined button type=%d", settings->button_type);
@@ -257,7 +274,12 @@ PGTK_WIDGET gtkNewButton(PGTK_WIDGET widget,
         gtkConnectEventCb(button, GTK_BUTTON_STATE_TYPE_PRESSED, settings->ptr_pressed);
     if (settings->ptr_released)
         gtkConnectEventCb(button, GTK_BUTTON_STATE_TYPE_RELEASED, settings->ptr_released);
-
+    if (type_range == GTK_BUTTON_TYPE_TOGGLE)
+    {
+        if (settings->ptr_toggled)
+            gtkConnectEventCb(button, GTK_BUTTON_STATE_TYPE_TOGGLED, settings->ptr_toggled);
+    }
+    
     if (settings->exit_on_type)
         g_signal_connect_swapped (G_OBJECT (button), settings->exit_on_type, G_CALLBACK(gtk_widget_destroy), G_OBJECT (widget));
 
@@ -281,14 +303,17 @@ PGTK_WIDGET gtkNewButton(PGTK_WIDGET widget,
     return (PGTK_WIDGET)button;
 }
 
-PGTK_WIDGET gtkNewMixedButton(PSTR caption, PSTR icon_file)
+PGTK_WIDGET gtkNewMixedButton(GTK_BUTTON_TYPE button_type, PSTR caption, PSTR icon_file)
 {
     PGTK_WIDGET button;
     PGTK_WIDGET box;
     PGTK_WIDGET label;
     PGTK_WIDGET image;
 
-    button = gtk_button_new();
+    if (button_type == GTK_BUTTON_TYPE_TOGGLE_MIXED)
+        button = gtk_toggle_button_new();
+    else
+        button = gtk_button_new();
     _ASSERT(button);   
 
     box = gtk_hbox_new (FALSE, 0);
@@ -311,7 +336,6 @@ PGTK_WIDGET gtkNewMixedButton(PSTR caption, PSTR icon_file)
         
     return button;
 }
-
 
 PGTK_WIDGET gtkAddToBox(PGTK_WIDGET box,
                             GTK_WIDGET_TYPE box_type, 
@@ -476,6 +500,7 @@ void gtkInitWidgetSettings(PTR settings,
                 s->ptr_leave        = NULL;
                 s->ptr_pressed      = NULL;
                 s->ptr_released     = NULL;
+                s->ptr_toggled      = NULL;
                 s->width            = 40;
                 s->hight            = 20; 
                 s->pos_x            = 20;
@@ -679,4 +704,17 @@ PGTK_PIXBUF gtkCreatePixbuf(const PSTR filename)
     
      return;
  }
+
+void gtkSetToggleButtonState( PGTK_WIDGET widget, BOOL state)
+{
+    _ASSERT(widget);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (widget),  state);
+    return;
+}
+
+BOOL gtkGetToggleButtonState(PGTK_WIDGET widget)
+{
+    _ASSERT(widget);
+    return gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (widget));
+}
 

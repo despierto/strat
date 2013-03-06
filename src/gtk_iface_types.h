@@ -45,10 +45,14 @@ typedef enum
 
 typedef enum
 {
-    GTK_BUTTON_TYPE_CLEAN = 0,
+    GTK_BUTTON_TYPE_EMPTY = 0,
     GTK_BUTTON_TYPE_LABEL,
     GTK_BUTTON_TYPE_MNEMONIC,
     GTK_BUTTON_TYPE_MIXED,
+    GTK_BUTTON_TYPE_TOGGLE,    
+    GTK_BUTTON_TYPE_TOGGLE_LABEL,        
+    GTK_BUTTON_TYPE_TOGGLE_MNEMONIC,            
+    GTK_BUTTON_TYPE_TOGGLE_MIXED,    
 } GTK_BUTTON_TYPE;
 
 typedef struct _GTK_WINDOW_SETTINGS_
@@ -88,6 +92,7 @@ typedef struct _GTK_BUTTON_SETTINGS_
     PTR     ptr_enter;
     PTR     ptr_leave;
     PTR     ptr_activate;
+    PTR     ptr_toggled;    
 
 }GTK_BUTTON_SETTINGS, *PGTK_BUTTON_SETTINGS;
 

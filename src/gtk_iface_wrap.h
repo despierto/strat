@@ -38,6 +38,10 @@
 #ifndef GTK_TABLE
 #define GTK_TABLE(x)            GTK_TABLE (x)
 #endif
+#ifndef GTK_TOGGLE_BUTTON
+#define GTK_TOGGLE_BUTTON(x)    GTK_TOGGLE_BUTTON (x)
+#endif
+
 
 
 
@@ -63,6 +67,8 @@ typedef gdouble         GF64, *PGF64;
 #define GTK_BUTTON_STATE_TYPE_ENTER       "enter"
 #define GTK_BUTTON_STATE_TYPE_LEAVE       "leave"
 #define GTK_BUTTON_STATE_TYPE_ACTIVE      "activate"
+#define GTK_BUTTON_STATE_TYPE_TOGGLED     "toggled"
+
 
 //collecting types for events
 #define GTK_EVENT_TYPE_DELETE           "delete_event"

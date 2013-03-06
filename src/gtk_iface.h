@@ -67,6 +67,10 @@ void        gtkSetText( PGTK_WIDGET widget,
                           GTK_WIDGET_TYPE widget_type, 
                           PSTR text);
 
+void        gtkSetToggleButtonState( PGTK_WIDGET widget, BOOL state);
+BOOL        gtkGetToggleButtonState(PGTK_WIDGET widget);
+
+
 
 #endif /*_GTK_IFACE_H_*/
 

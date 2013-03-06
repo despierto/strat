@@ -246,6 +246,23 @@ PGTK_WIDGET gtkNewButton(PGTK_WIDGET widget,
             type_range = GTK_BUTTON_TYPE_TOGGLE;
             button = gtkNewMixedButton(settings->button_type, settings->caption, settings->icon_file);
             break;
+        case GTK_BUTTON_TYPE_CHECK:
+            type_range = GTK_BUTTON_TYPE_TOGGLE;
+            button = gtk_check_button_new();
+            break;
+        case GTK_BUTTON_TYPE_CHECK_LABEL:
+            type_range = GTK_BUTTON_TYPE_TOGGLE;
+            button = gtk_check_button_new_with_label(settings->caption);
+            break;
+        case GTK_BUTTON_TYPE_CHECK_MNEMONIC:
+            type_range = GTK_BUTTON_TYPE_TOGGLE;
+            button = gtk_check_button_new_with_mnemonic(settings->caption);
+            break;
+        case GTK_BUTTON_TYPE_CHECK_MIXED:
+            type_range = GTK_BUTTON_TYPE_TOGGLE;
+            button = gtkNewMixedButton(settings->button_type, settings->caption, settings->icon_file);
+            break;
+
         default:
              gprint_wrn(" undefined button type=%d", settings->button_type);
             break;
@@ -312,6 +329,8 @@ PGTK_WIDGET gtkNewMixedButton(GTK_BUTTON_TYPE button_type, PSTR caption, PSTR ic
 
     if (button_type == GTK_BUTTON_TYPE_TOGGLE_MIXED)
         button = gtk_toggle_button_new();
+    else if (button_type == GTK_BUTTON_TYPE_CHECK_MIXED)
+        button = gtk_check_button_new();
     else
         button = gtk_button_new();
     _ASSERT(button);   

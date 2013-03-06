@@ -23,7 +23,7 @@ void minus(PGTK_WIDGET widget, GPTR data)
     return;
 }
 
-void process_tbutton_state(PGTK_WIDGET widget, GPTR data)
+void process_toggle_button_state(PGTK_WIDGET widget, GPTR data)
 {
     if (gtkGetToggleButtonState(widget))
     {
@@ -32,6 +32,19 @@ void process_tbutton_state(PGTK_WIDGET widget, GPTR data)
     else
     {
         gprint_dbg("widget=   0x%x data=0x%x: toggle button is released", (U32)widget, (U32)data);
+    }
+    return;
+}
+
+void process_check_button_state(PGTK_WIDGET widget, GPTR data)
+{
+    if (gtkGetToggleButtonState(widget))
+    {
+        gprint_dbg("widget=   0x%x data=0x%x: check button is pressed", (U32)widget, (U32)data);
+    }
+    else
+    {
+        gprint_dbg("widget=   0x%x data=0x%x: check button is released", (U32)widget, (U32)data);
     }
     return;
 }
@@ -58,7 +71,7 @@ S32 main(S32 argc, PSTR argv[])
 {
     PGTK_WIDGET window;
     PGTK_WIDGET button1, button2, button3;
-    PGTK_WIDGET toggle_button;
+    PGTK_WIDGET toggle_button, check_button;
     PGTK_WIDGET frame;  
     PGTK_WIDGET label, label_1;    
     PGTK_WIDGET hbox, vbox;
@@ -72,7 +85,7 @@ S32 main(S32 argc, PSTR argv[])
     GTK_SEPARATOR_SETTINGS  vseparator_settings, hseparator_settings;    
     GTK_TABLE_SETTINGS      table_settings;
     GTK_CELL_SETTINGS       cell_style_1;
-    GTK_BUTTON_SETTINGS     toggle_button_settings;
+    GTK_BUTTON_SETTINGS     toggle_button_settings, check_button_settings;
 
 
     gtkInitWidgetSettings((PTR)&window_settings, GTK_WIDGET_TYPE_WINDOW);
@@ -89,6 +102,7 @@ S32 main(S32 argc, PSTR argv[])
     gtkInitWidgetSettings((PTR)&table_settings, GTK_WIDGET_TYPE_TABLE);        
     gtkInitWidgetSettings((PTR)&cell_style_1, GTK_WIDGET_TYPE_CELL);      
     gtkInitWidgetSettings((PTR)&toggle_button_settings, GTK_WIDGET_TYPE_BUTTON); 
+    gtkInitWidgetSettings((PTR)&check_button_settings, GTK_WIDGET_TYPE_BUTTON); 
 
     gprint_log("entry application");    
     gtkInit(argc, argv);
@@ -174,7 +188,7 @@ S32 main(S32 argc, PSTR argv[])
     gtkAddToTable(table, button3, GTK_WIDGET_TYPE_BUTTON, (PGTK_CELL_SETTINGS)&cell_style_1);
 
     toggle_button_settings.caption          = "xXx";
-    toggle_button_settings.ptr_toggled      = (PTR)&process_tbutton_state;
+    toggle_button_settings.ptr_toggled      = (PTR)&process_toggle_button_state;
     toggle_button_settings.icon_file        = GBL_ICON_FILE_PLANET_01; 
     toggle_button_settings.width            = 100;
     toggle_button_settings.hight            = 135; 
@@ -182,6 +196,17 @@ S32 main(S32 argc, PSTR argv[])
     toggle_button_settings.pos_y            = 80;      
     toggle_button_settings.button_type      = GTK_BUTTON_TYPE_TOGGLE_MIXED;
     toggle_button = gtkNewButton(NULL, GTK_WIDGET_TYPE_NONE, (PGTK_BUTTON_SETTINGS)&toggle_button_settings);
+    gtkAddToBox(hbox, GTK_WIDGET_TYPE_HBOX, GTK_BOX_PACK_TYPE_START, toggle_button, GTK_WIDGET_TYPE_BUTTON, TRUE, FALSE, 0);
+  
+    check_button_settings.caption          = "check it";
+    check_button_settings.ptr_toggled      = (PTR)&process_check_button_state;
+    check_button_settings.icon_file        = GBL_ICON_FILE_PLANET_01; 
+    check_button_settings.width            = 100;
+    check_button_settings.hight            = 135; 
+    check_button_settings.pos_x            = 50;
+    check_button_settings.pos_y            = 80;      
+    check_button_settings.button_type      = GTK_BUTTON_TYPE_CHECK_LABEL;
+    toggle_button = gtkNewButton(NULL, GTK_WIDGET_TYPE_NONE, (PGTK_BUTTON_SETTINGS)&check_button_settings);
     gtkAddToBox(hbox, GTK_WIDGET_TYPE_HBOX, GTK_BOX_PACK_TYPE_START, toggle_button, GTK_WIDGET_TYPE_BUTTON, TRUE, FALSE, 0);
   
     
